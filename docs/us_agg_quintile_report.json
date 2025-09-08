@@ -1,0 +1,136 @@
+{
+  "total_bonds": 1000,
+  "avg_score": 68.40798,
+  "quintile_analysis": {
+    "Q1 (Worst)": {
+      "count": 200,
+      "avg_score": 60.625499999999995,
+      "min_score": 48.67,
+      "max_score": 63.63,
+      "avg_spread": 62.301755480876544,
+      "avg_maturity": 13.609755591435732,
+      "most_common_rating": "LIN-BB+",
+      "rating_distribution": {
+        "BB": 200
+      },
+      "sector_distribution": {
+        "Treasury": 83,
+        "Securitized-MBS": 50,
+        "Corporate-Financial": 28
+      }
+    },
+    "Q2": {
+      "count": 200,
+      "avg_score": 65.62715,
+      "min_score": 63.64,
+      "max_score": 67.3,
+      "avg_spread": 75.96131849228806,
+      "avg_maturity": 12.955441403812555,
+      "most_common_rating": "LIN-BBB-",
+      "rating_distribution": {
+        "BBB": 138,
+        "BB": 62
+      },
+      "sector_distribution": {
+        "Treasury": 80,
+        "Securitized-MBS": 48,
+        "Corporate-Financial": 33
+      }
+    },
+    "Q3": {
+      "count": 200,
+      "avg_score": 68.988,
+      "min_score": 67.33,
+      "max_score": 70.8,
+      "avg_spread": 72.85390679844448,
+      "avg_maturity": 13.839403835638237,
+      "most_common_rating": "LIN-BBB",
+      "rating_distribution": {
+        "BBB": 200
+      },
+      "sector_distribution": {
+        "Treasury": 68,
+        "Securitized-MBS": 65,
+        "Corporate-Financial": 26
+      }
+    },
+    "Q4": {
+      "count": 201,
+      "avg_score": 72.01388059701492,
+      "min_score": 70.81,
+      "max_score": 73.06,
+      "avg_spread": 55.95566103140469,
+      "avg_maturity": 14.174928778212728,
+      "most_common_rating": "LIN-BBB+",
+      "rating_distribution": {
+        "BBB": 201
+      },
+      "sector_distribution": {
+        "Treasury": 110,
+        "Securitized-MBS": 40,
+        "Corporate-Financial": 24
+      }
+    },
+    "Q5 (Best)": {
+      "count": 199,
+      "avg_score": 74.79929648241206,
+      "min_score": 73.07,
+      "max_score": 81.23,
+      "avg_spread": 91.17060512240259,
+      "avg_maturity": 14.168911342157076,
+      "most_common_rating": "LIN-BBB+",
+      "rating_distribution": {
+        "BBB": 128,
+        "A": 71
+      },
+      "sector_distribution": {
+        "Securitized-MBS": 67,
+        "Treasury": 59,
+        "Corporate-Industrial": 32
+      }
+    }
+  },
+  "rating_distribution": {
+    "BBB": 667,
+    "BB": 262,
+    "A": 71
+  },
+  "sector_analysis": {
+    "Treasury": {
+      "mean_score": 68.17875,
+      "std_score": 4.519417692379792,
+      "count": 400,
+      "common_rating": "LIN-BBB+"
+    },
+    "Corporate-Industrial": {
+      "mean_score": 68.24266666666668,
+      "std_score": 7.101457624470971,
+      "count": 120,
+      "common_rating": "LIN-BB+"
+    },
+    "Corporate-Financial": {
+      "mean_score": 67.72600000000001,
+      "std_score": 5.285678999014238,
+      "count": 130,
+      "common_rating": "LIN-BB+"
+    },
+    "Securitized-MBS": {
+      "mean_score": 68.7981111111111,
+      "std_score": 4.937193842248404,
+      "count": 270,
+      "common_rating": "LIN-BBB"
+    },
+    "Securitized-ABS": {
+      "mean_score": 69.11725,
+      "std_score": 5.655173709046185,
+      "count": 40,
+      "common_rating": "LIN-BBB"
+    },
+    "Securitized-CMBS": {
+      "mean_score": 70.07,
+      "std_score": 5.524783323283437,
+      "count": 40,
+      "common_rating": "LIN-BBB"
+    }
+  }
+}

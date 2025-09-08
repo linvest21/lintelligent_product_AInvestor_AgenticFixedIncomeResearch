@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Optional, Any
 import logging
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 import time
 
 # Note: blpapi would be imported in production environment
@@ -340,17 +340,20 @@ class BloombergConnector:
         for field in critical_fields:
             if field in completeness:
                 critical_coverage.append(completeness[field]['coverage'])
+            else:
+                # Field not present in data at all = 0% coverage
+                critical_coverage.append(0.0)
         
         overall_coverage = np.mean(critical_coverage) if critical_coverage else 0.0
         
         # Check data quality thresholds per specification
         validation_report = {
             'total_securities': total_securities,
-            'overall_coverage': overall_coverage,
-            'meets_minimum_coverage': overall_coverage >= 0.95,  # 95% requirement
+            'overall_coverage': float(overall_coverage),
+            'meets_minimum_coverage': bool(overall_coverage >= 0.95),  # 95% requirement
             'field_completeness': completeness,
             'data_quality_issues': [],
-            'validation_timestamp': datetime.utcnow().isoformat()
+            'validation_timestamp': datetime.now(timezone.utc).isoformat()
         }
         
         # Check for data quality issues
@@ -365,12 +368,16 @@ class BloombergConnector:
             if field in data.columns:
                 field_data = data[field].dropna()
                 if len(field_data) > 0:
-                    q99 = field_data.quantile(0.99)
-                    q01 = field_data.quantile(0.01)
-                    outliers = ((field_data > q99) | (field_data < q01)).sum()
+                    # Use IQR method for outlier detection
+                    q75 = field_data.quantile(0.75)
+                    q25 = field_data.quantile(0.25)
+                    iqr = q75 - q25
+                    lower_bound = q25 - 1.5 * iqr
+                    upper_bound = q75 + 1.5 * iqr
+                    outliers = ((field_data < lower_bound) | (field_data > upper_bound)).sum()
                     outlier_rate = outliers / len(field_data)
                     
-                    if outlier_rate > 0.05:  # More than 5% outliers
+                    if outlier_rate > 0.02:  # More than 2% outliers
                         validation_report['data_quality_issues'].append(
                             f"{field}: {outlier_rate:.1%} outlier rate"
                         )

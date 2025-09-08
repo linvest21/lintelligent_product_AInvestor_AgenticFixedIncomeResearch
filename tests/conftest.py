@@ -5,6 +5,11 @@ JIRA: AINV-711
 Provides pytest fixtures and configuration for comprehensive testing.
 """
 
+import sys
+import os
+# Add project root to Python path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -81,7 +86,12 @@ def validation_framework():
 def daily_pipeline(test_db_session):
     """Create DailyETLPipeline instance with test database"""
     engine = test_db_session.get_bind()
-    return DailyETLPipeline(engine)
+    # Extract the database URL from the engine
+    database_url = str(engine.url)
+    pipeline = DailyETLPipeline(database_url)
+    # Ensure the tables exist on the pipeline's engine too
+    Base.metadata.create_all(pipeline.engine)
+    return pipeline
 
 
 @pytest.fixture
@@ -223,11 +233,13 @@ def edge_case_bond_data():
             'OutstandE': 300000000,  # Minimum threshold
             'Maturity': 1.0,  # Minimum threshold
             'MrktValue': 300000000,
+            'MrkValBeg': 300000000,
             'ISMA_MDur': 0.5,
             'OAS_bp': 2000,  # Very high spread
             'IssrClsL1': 'Corporate-Industrial',
             'Sector': 'Industrial',
             'RetTotal': -0.50,  # Negative return
+            'RetCurncy': 0.01,
         },
         # Maximum values  
         {
@@ -237,11 +249,13 @@ def edge_case_bond_data():
             'OutstandE': 50000000000,  # Very large
             'Maturity': 30.0,  # Long maturity
             'MrktValue': 50000000000,
+            'MrkValBeg': 50000000000,
             'ISMA_MDur': 25.0,  # High duration
             'OAS_bp': 10,  # Very low spread
             'IssrClsL1': 'Government',
             'Sector': 'Government',
             'RetTotal': 0.20,  # High return
+            'RetCurncy': -0.02,
         },
         # Null/Missing values
         {
@@ -275,9 +289,11 @@ def performance_test_data():
         'OutstandE': np.random.lognormal(20, 1, n) * 1000000,
         'Maturity': np.random.exponential(5, n) + 1,
         'MrktValue': np.random.lognormal(18, 1, n) * 1000000,
+        'MrkValBeg': np.random.lognormal(18, 1, n) * 1000000,
         'ISMA_MDur': np.random.gamma(2, 3, n),
         'OAS_bp': np.random.gamma(2, 50, n),
         'IssrClsL1': np.random.choice(['Corporate-Financial', 'Corporate-Industrial'], n),
         'Sector': np.random.choice(['Financial', 'Industrial'], n),
-        'RetTotal': np.random.normal(0.05, 0.1, n)
+        'RetTotal': np.random.normal(0.05, 0.1, n),
+        'RetCurncy': np.random.normal(0, 0.02, n)
     })

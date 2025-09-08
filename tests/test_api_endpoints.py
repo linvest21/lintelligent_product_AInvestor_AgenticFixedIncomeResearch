@@ -6,6 +6,11 @@ Comprehensive test coverage for the REST API endpoints including
 real-time rating lookup, batch processing, system status, and error handling.
 """
 
+import sys
+import os
+# Add project root to Python path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import pytest
 import json
 from datetime import datetime, date, timedelta
@@ -541,3 +546,7 @@ class TestAPIEndpoints:
         # Test Swagger UI (if available)
         docs_response = test_api_client.get("/docs")
         assert docs_response.status_code == 200
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Unit Tests for ValidationFramework
 JIRA: AINV-711
@@ -5,6 +6,10 @@ JIRA: AINV-711
 Comprehensive test coverage for the quality control and validation system,
 including Bloomberg consistency, spread correlation, and peer group analysis.
 """
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import pytest
 import pandas as pd
@@ -523,3 +528,7 @@ class TestValidationFramework:
             assert isinstance(result, dict)
             assert 'status' in result
             assert result['status'] in ['PASS', 'FLAG_FOR_REVIEW']
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

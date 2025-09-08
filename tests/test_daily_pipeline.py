@@ -6,6 +6,12 @@ Comprehensive test coverage for the daily ETL pipeline including
 data extraction, filtering, calculation, validation, and storage processes.
 """
 
+import sys
+import os
+if __name__ == "__main__":
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, project_root)
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -22,18 +28,21 @@ class TestDailyETLPipeline:
     
     def test_initialization(self, test_database_engine):
         """Test daily pipeline initialization"""
-        pipeline = DailyETLPipeline(test_database_engine)
+        database_url = str(test_database_engine.url)
+        pipeline = DailyETLPipeline(database_url)
         
-        assert pipeline.engine == test_database_engine
+        assert pipeline.engine is not None
         assert hasattr(pipeline, 'bloomberg_connector')
         assert hasattr(pipeline, 'rating_engine')
         assert hasattr(pipeline, 'validation_framework')
-        assert pipeline.batch_size == 1000  # Default batch size
+        assert pipeline.database_url is not None
     
     def test_initialization_custom_params(self, test_database_engine):
-        """Test initialization with custom parameters"""
-        pipeline = DailyETLPipeline(test_database_engine, batch_size=500)
-        assert pipeline.batch_size == 500
+        """Test initialization with custom database URL"""
+        database_url = str(test_database_engine.url)
+        pipeline = DailyETLPipeline(database_url)
+        assert pipeline.database_url == database_url
+        assert pipeline.engine is not None
     
     @pytest.mark.asyncio
     async def test_run_daily_process_complete_success(self, daily_pipeline, sample_bloomberg_data):
@@ -45,7 +54,7 @@ class TestDailyETLPipeline:
              patch.object(daily_pipeline, '_calculate_ratings', new_callable=AsyncMock) as mock_calc, \
              patch.object(daily_pipeline, '_validate_ratings', new_callable=AsyncMock) as mock_validate, \
              patch.object(daily_pipeline, '_store_results', new_callable=AsyncMock) as mock_store, \
-             patch.object(daily_pipeline, '_generate_alerts', new_callable=AsyncMock) as mock_alerts:
+             patch.object(daily_pipeline, '_generate_outlier_alerts', new_callable=AsyncMock) as mock_alerts:
             
             # Mock return values
             mock_extract.return_value = sample_bloomberg_data
@@ -127,7 +136,7 @@ class TestDailyETLPipeline:
         with patch.object(daily_pipeline.bloomberg_connector, 'extract_global_aggregate_data') as mock_extract:
             mock_extract.side_effect = ConnectionError("Unable to connect to Bloomberg")
             
-            with pytest.raises(Exception, match="Bloomberg data extraction failed"):
+            with pytest.raises(ConnectionError, match="Unable to connect to Bloomberg"):
                 await daily_pipeline._extract_bloomberg_data()
     
     @pytest.mark.asyncio
@@ -232,12 +241,24 @@ class TestDailyETLPipeline:
             result = await daily_pipeline._calculate_ratings(filtered_data)
             
             assert isinstance(result, list)
-            assert len(result) == 2  # Should only return successful calculations
+            assert len(result) == 3  # Should return all calculations (including failures)
             
-            # Verify only successful calculations are included
-            for rating_result in result:
+            # Count successful and failed calculations
+            successful = [r for r in result if 'error' not in r]
+            failed = [r for r in result if 'error' in r]
+            
+            assert len(successful) == 2  # Two should succeed
+            assert len(failed) == 1  # One should fail
+            
+            # Verify successful calculations
+            for rating_result in successful:
                 assert 'error' not in rating_result
                 assert rating_result['final_score'] == 88.5
+            
+            # Verify failed calculation has error
+            for rating_result in failed:
+                assert 'error' in rating_result
+                assert rating_result['error'] == 'Calculation failed for this security'
     
     @pytest.mark.asyncio
     async def test_calculate_ratings_batch_processing(self, daily_pipeline, performance_test_data):
@@ -281,7 +302,7 @@ class TestDailyETLPipeline:
             'IssrClsL1': ['Corporate-Financial']
         })
         
-        with patch.object(daily_pipeline.validation_framework, 'validate_batch_ratings') as mock_validate:
+        with patch.object(daily_pipeline.validation_framework, 'batch_validate_ratings') as mock_validate:
             mock_validate.return_value = [
                 {
                     'cusip': '123456789',
@@ -295,10 +316,10 @@ class TestDailyETLPipeline:
             
             result = await daily_pipeline._validate_ratings(rating_results, bloomberg_data)
             
-            assert isinstance(result, list)
+            assert isinstance(result, pd.DataFrame)
             assert len(result) == 1
-            assert result[0]['overall_status'] == 'PASSED'
-            assert result[0]['validation_score'] == 95.0
+            assert result.iloc[0]['overall_status'] == 'PASSED'
+            assert result.iloc[0]['validation_score'] == 95.0
             
             mock_validate.assert_called_once()
     
@@ -324,7 +345,7 @@ class TestDailyETLPipeline:
             'IssrClsL1': ['Corporate-Industrial']
         })
         
-        with patch.object(daily_pipeline.validation_framework, 'validate_batch_ratings') as mock_validate:
+        with patch.object(daily_pipeline.validation_framework, 'batch_validate_ratings') as mock_validate:
             mock_validate.return_value = [
                 {
                     'cusip': '123456789',
@@ -338,8 +359,8 @@ class TestDailyETLPipeline:
             
             result = await daily_pipeline._validate_ratings(rating_results, bloomberg_data)
             
-            assert result[0]['overall_status'] == 'REVIEW_REQUIRED'
-            assert result[0]['validation_score'] == 45.0
+            assert result.iloc[0]['overall_status'] == 'REVIEW_REQUIRED'
+            assert result.iloc[0]['validation_score'] == 45.0
     
     @pytest.mark.asyncio
     async def test_store_results_success(self, daily_pipeline, test_db_session):
@@ -380,7 +401,7 @@ class TestDailyETLPipeline:
             mock_session.return_value.__enter__.return_value = test_db_session
             
             result = await daily_pipeline._store_results(
-                rating_results, bloomberg_data, validation_results, process_date
+                rating_results, validation_results, process_date, test_db_session
             )
             
             assert isinstance(result, dict)
@@ -430,7 +451,7 @@ class TestDailyETLPipeline:
             mock_session.return_value.__enter__.return_value = test_db_session
             
             result = await daily_pipeline._store_results(
-                rating_results, bloomberg_data, [], date.today()
+                rating_results, [], date.today(), test_db_session
             )
             
             # Should handle duplicates gracefully
@@ -532,7 +553,8 @@ class TestDailyETLPipeline:
         with session_context as session:
             assert session is not None
             # Session should be usable for queries
-            result = session.execute("SELECT 1")
+            from sqlalchemy import text
+            result = session.execute(text("SELECT 1"))
             assert result is not None
     
     @pytest.mark.asyncio
@@ -543,7 +565,7 @@ class TestDailyETLPipeline:
         # Mock all external dependencies for pure performance testing
         with patch.object(daily_pipeline.bloomberg_connector, 'extract_global_aggregate_data') as mock_extract, \
              patch.object(daily_pipeline.rating_engine, 'calculate_rating') as mock_calc, \
-             patch.object(daily_pipeline.validation_framework, 'validate_batch_ratings') as mock_validate, \
+             patch.object(daily_pipeline.validation_framework, 'batch_validate_ratings') as mock_validate, \
              patch.object(daily_pipeline, '_store_results', new_callable=AsyncMock) as mock_store:
             
             # Setup mocks
@@ -629,3 +651,7 @@ class TestDailyETLPipeline:
             
             # Memory increase should be reasonable (< 100MB for test dataset)
             assert memory_increase < 100
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

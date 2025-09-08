@@ -16,7 +16,7 @@ import math
 from typing import Dict, Any, Optional
 import pandas as pd
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +130,7 @@ class LINVEST21RatingEngine:
                     'currency': round(self._calculate_currency_score(bond_data['RetCurncy']), 2)
                 },
                 'validation_status': 'CALCULATED',
-                'calculation_timestamp': datetime.utcnow().isoformat()
+                'calculation_timestamp': datetime.now(timezone.utc).isoformat()
             }
             
             logger.debug(f"Rating calculated successfully: {linvest21_rating} (Score: {final_score})")
@@ -143,7 +143,7 @@ class LINVEST21RatingEngine:
                 'linvest21_rating': None,
                 'error': str(e),
                 'validation_status': 'FAILED',
-                'calculation_timestamp': datetime.utcnow().isoformat()
+                'calculation_timestamp': datetime.now(timezone.utc).isoformat()
             }
     
     def _calculate_duration_score(self, isma_mdur: float) -> float:
@@ -176,7 +176,11 @@ class LINVEST21RatingEngine:
         Returns:
             Spread risk score (0-100)
         """
-        spread_risk_score = min(oas_bp / 500.0, 1.0) * 100
+        if oas_bp is None:
+            return 0.0
+        
+        # Ensure non-negative spreads for risk scoring
+        spread_risk_score = min(max(oas_bp, 0) / 500.0, 1.0) * 100
         
         # Risk interpretation:
         # 0-50bp: Minimal spread risk (10-20 points)

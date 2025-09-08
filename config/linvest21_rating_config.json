@@ -1,0 +1,293 @@
+{
+  "rating_system": {
+    "name": "LINVEST21",
+    "version": "1.0.0",
+    "total_notches": 19,
+    "scale_range": {
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "rating_definitions": [
+    {
+      "rating": "LIN-AAA",
+      "score_min": 95,
+      "score_max": 100,
+      "grade": "Prime",
+      "sp_equivalent": "AAA",
+      "moodys_equivalent": "Aaa",
+      "default_probability_min": 0.0,
+      "default_probability_max": 0.01,
+      "description": "Exceptional credit quality, virtually no default risk",
+      "investment_grade": true,
+      "risk_level": "Minimal"
+    },
+    {
+      "rating": "LIN-AA+",
+      "score_min": 90,
+      "score_max": 94,
+      "grade": "High Grade",
+      "sp_equivalent": "AA+",
+      "moodys_equivalent": "Aa1",
+      "default_probability_min": 0.01,
+      "default_probability_max": 0.02,
+      "description": "Superior credit quality, minimal risk",
+      "investment_grade": true,
+      "risk_level": "Very Low"
+    },
+    {
+      "rating": "LIN-AA",
+      "score_min": 87,
+      "score_max": 89,
+      "grade": "High Grade",
+      "sp_equivalent": "AA",
+      "moodys_equivalent": "Aa2",
+      "default_probability_min": 0.02,
+      "default_probability_max": 0.03,
+      "description": "Excellent credit quality, very low risk",
+      "investment_grade": true,
+      "risk_level": "Very Low"
+    },
+    {
+      "rating": "LIN-AA-",
+      "score_min": 84,
+      "score_max": 86,
+      "grade": "High Grade",
+      "sp_equivalent": "AA-",
+      "moodys_equivalent": "Aa3",
+      "default_probability_min": 0.03,
+      "default_probability_max": 0.05,
+      "description": "Very strong credit quality",
+      "investment_grade": true,
+      "risk_level": "Low"
+    },
+    {
+      "rating": "LIN-A+",
+      "score_min": 81,
+      "score_max": 83,
+      "grade": "Upper Medium Grade",
+      "sp_equivalent": "A+",
+      "moodys_equivalent": "A1",
+      "default_probability_min": 0.05,
+      "default_probability_max": 0.08,
+      "description": "Strong credit quality, low risk",
+      "investment_grade": true,
+      "risk_level": "Low"
+    },
+    {
+      "rating": "LIN-A",
+      "score_min": 78,
+      "score_max": 80,
+      "grade": "Upper Medium Grade",
+      "sp_equivalent": "A",
+      "moodys_equivalent": "A2",
+      "default_probability_min": 0.08,
+      "default_probability_max": 0.12,
+      "description": "Good credit quality, susceptible to economic conditions",
+      "investment_grade": true,
+      "risk_level": "Low-Medium"
+    },
+    {
+      "rating": "LIN-A-",
+      "score_min": 75,
+      "score_max": 77,
+      "grade": "Upper Medium Grade",
+      "sp_equivalent": "A-",
+      "moodys_equivalent": "A3",
+      "default_probability_min": 0.12,
+      "default_probability_max": 0.20,
+      "description": "Good credit quality, more susceptible to changes",
+      "investment_grade": true,
+      "risk_level": "Medium"
+    },
+    {
+      "rating": "LIN-BBB+",
+      "score_min": 72,
+      "score_max": 74,
+      "grade": "Lower Medium Grade",
+      "sp_equivalent": "BBB+",
+      "moodys_equivalent": "Baa1",
+      "default_probability_min": 0.20,
+      "default_probability_max": 0.35,
+      "description": "Adequate credit quality, moderate risk",
+      "investment_grade": true,
+      "risk_level": "Medium"
+    },
+    {
+      "rating": "LIN-BBB",
+      "score_min": 68,
+      "score_max": 71,
+      "grade": "Lower Medium Grade",
+      "sp_equivalent": "BBB",
+      "moodys_equivalent": "Baa2",
+      "default_probability_min": 0.35,
+      "default_probability_max": 0.60,
+      "description": "Adequate payment capacity, adverse conditions possible",
+      "investment_grade": true,
+      "risk_level": "Medium"
+    },
+    {
+      "rating": "LIN-BBB-",
+      "score_min": 65,
+      "score_max": 67,
+      "grade": "Lower Medium Grade",
+      "sp_equivalent": "BBB-",
+      "moodys_equivalent": "Baa3",
+      "default_probability_min": 0.60,
+      "default_probability_max": 1.00,
+      "description": "Lowest investment grade, vulnerable to adverse conditions",
+      "investment_grade": true,
+      "risk_level": "Medium-High"
+    },
+    {
+      "rating": "LIN-BB+",
+      "score_min": 55,
+      "score_max": 64,
+      "grade": "Non-Investment Grade",
+      "sp_equivalent": "BB+",
+      "moodys_equivalent": "Ba1",
+      "default_probability_min": 1.00,
+      "default_probability_max": 2.00,
+      "description": "Speculative, substantial credit risk",
+      "investment_grade": false,
+      "risk_level": "High"
+    },
+    {
+      "rating": "LIN-BB",
+      "score_min": 50,
+      "score_max": 54,
+      "grade": "Non-Investment Grade",
+      "sp_equivalent": "BB",
+      "moodys_equivalent": "Ba2",
+      "default_probability_min": 2.00,
+      "default_probability_max": 4.00,
+      "description": "Speculative, significant ongoing uncertainty",
+      "investment_grade": false,
+      "risk_level": "High"
+    },
+    {
+      "rating": "LIN-BB-",
+      "score_min": 45,
+      "score_max": 49,
+      "grade": "Non-Investment Grade",
+      "sp_equivalent": "BB-",
+      "moodys_equivalent": "Ba3",
+      "default_probability_min": 4.00,
+      "default_probability_max": 6.00,
+      "description": "Speculative, high credit risk",
+      "investment_grade": false,
+      "risk_level": "High"
+    },
+    {
+      "rating": "LIN-B+",
+      "score_min": 35,
+      "score_max": 44,
+      "grade": "Highly Speculative",
+      "sp_equivalent": "B+",
+      "moodys_equivalent": "B1",
+      "default_probability_min": 6.00,
+      "default_probability_max": 8.00,
+      "description": "Highly speculative, likely to fulfill obligations",
+      "investment_grade": false,
+      "risk_level": "Very High"
+    },
+    {
+      "rating": "LIN-B",
+      "score_min": 30,
+      "score_max": 34,
+      "grade": "Highly Speculative",
+      "sp_equivalent": "B",
+      "moodys_equivalent": "B2",
+      "default_probability_min": 8.00,
+      "default_probability_max": 12.00,
+      "description": "Highly speculative, high credit risk",
+      "investment_grade": false,
+      "risk_level": "Very High"
+    },
+    {
+      "rating": "LIN-B-",
+      "score_min": 25,
+      "score_max": 29,
+      "grade": "Highly Speculative",
+      "sp_equivalent": "B-",
+      "moodys_equivalent": "B3",
+      "default_probability_min": 12.00,
+      "default_probability_max": 18.00,
+      "description": "Very high credit risk, vulnerable",
+      "investment_grade": false,
+      "risk_level": "Very High"
+    },
+    {
+      "rating": "LIN-CCC+",
+      "score_min": 15,
+      "score_max": 24,
+      "grade": "Substantial Risk",
+      "sp_equivalent": "CCC+",
+      "moodys_equivalent": "Caa1",
+      "default_probability_min": 18.00,
+      "default_probability_max": 25.00,
+      "description": "Substantial credit risk, vulnerable to default",
+      "investment_grade": false,
+      "risk_level": "Extreme"
+    },
+    {
+      "rating": "LIN-CCC",
+      "score_min": 10,
+      "score_max": 14,
+      "grade": "Extremely Speculative",
+      "sp_equivalent": "CCC",
+      "moodys_equivalent": "Caa2",
+      "default_probability_min": 25.00,
+      "default_probability_max": 35.00,
+      "description": "Very high levels of credit risk",
+      "investment_grade": false,
+      "risk_level": "Extreme"
+    },
+    {
+      "rating": "LIN-CCC-",
+      "score_min": 0,
+      "score_max": 9,
+      "grade": "Default Imminent",
+      "sp_equivalent": "CCC-",
+      "moodys_equivalent": "Caa3",
+      "default_probability_min": 35.00,
+      "default_probability_max": 100.00,
+      "description": "Near default with little recovery prospect",
+      "investment_grade": false,
+      "risk_level": "Default Imminent"
+    }
+  ],
+  "grade_categories": {
+    "investment_grade": {
+      "ratings": ["LIN-AAA", "LIN-AA+", "LIN-AA", "LIN-AA-", "LIN-A+", "LIN-A", "LIN-A-", "LIN-BBB+", "LIN-BBB", "LIN-BBB-"],
+      "score_range": [65, 100],
+      "description": "Securities suitable for institutional investment"
+    },
+    "non_investment_grade": {
+      "ratings": ["LIN-BB+", "LIN-BB", "LIN-BB-", "LIN-B+", "LIN-B", "LIN-B-", "LIN-CCC+", "LIN-CCC", "LIN-CCC-"],
+      "score_range": [0, 64],
+      "description": "Speculative securities with substantial risk"
+    }
+  },
+  "scoring_methodology": {
+    "components": {
+      "quantitative": {
+        "weight": 0.40,
+        "factors": ["duration_risk", "spread_analysis", "liquidity_score"]
+      },
+      "agency_rating": {
+        "weight": 0.35,
+        "factors": ["bloomberg_rating", "rating_trajectory", "outlook"]
+      },
+      "sector_dynamics": {
+        "weight": 0.25,
+        "factors": ["industry_risk", "sector_momentum", "peer_comparison"]
+      },
+      "alpha_factors": {
+        "weight": 0.15,
+        "factors": ["price_momentum", "market_stability", "currency_risk"]
+      }
+    },
+    "total_weight": 1.00
+  }
+}

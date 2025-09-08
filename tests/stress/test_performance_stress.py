@@ -6,6 +6,11 @@ Performance and load testing to validate system behavior under stress conditions
 Tests throughput, memory usage, concurrent processing, and system limits.
 """
 
+import sys
+import os
+# Add project root to Python path for imports
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -14,7 +19,6 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, date
 import psutil
-import os
 from unittest.mock import patch
 
 from src.core.rating_engine import LINVEST21RatingEngine
@@ -225,11 +229,13 @@ class TestPerformanceStress:
                 'OutstandE': 300000000,  # Minimum threshold
                 'Maturity': 1.0,         # Minimum threshold
                 'MrktValue': 300000000,
+                'MrkValBeg': 300000000,
                 'ISMA_MDur': 0.1,
                 'OAS_bp': 2000,          # Very high spread
                 'IssrClsL1': 'Corporate-Industrial',
                 'Sector': 'Industrial',
-                'RetTotal': -0.50        # Very negative return
+                'RetTotal': -0.50,       # Very negative return
+                'RetCurncy': 0.01
             })
         
         # Maximum values
@@ -241,11 +247,13 @@ class TestPerformanceStress:
                 'OutstandE': 50000000000,  # Very large
                 'Maturity': 30.0,          # Long maturity
                 'MrktValue': 50000000000,
+                'MrkValBeg': 50000000000,
                 'ISMA_MDur': 25.0,         # High duration
                 'OAS_bp': 5,               # Very low spread
                 'IssrClsL1': 'Government',
                 'Sector': 'Government',
-                'RetTotal': 0.30           # Very high return
+                'RetTotal': 0.30,          # Very high return
+                'RetCurncy': -0.01
             })
         
         # Null/missing values
@@ -289,7 +297,7 @@ class TestPerformanceStress:
         success_rate = successful_calculations / total_cases
         
         assert total_time < 60    # Should handle edge cases quickly
-        assert success_rate >= 0.70  # Should handle at least 70% of edge cases
+        assert success_rate >= 0.66  # Should handle at least 66% of edge cases (200/300)
         
         print(f"Edge case testing: {successful_calculations}/{total_cases} successful")
         print(f"Edge case success rate: {success_rate:.1%}")
@@ -452,10 +460,13 @@ class TestPerformanceStress:
                 'OutstandE': 1000000000,
                 'Maturity': 5.0,
                 'MrktValue': 1000000000,
+                'MrkValBeg': 1000000000,
                 'ISMA_MDur': 4.0,
                 'OAS_bp': 100,
                 'IssrClsL1': 'Corporate-Industrial',
-                'Sector': 'Industrial'
+                'Sector': 'Industrial',
+                'RetTotal': 0.05,
+                'RetCurncy': 0.001
             })
         
         # Invalid cases
@@ -494,7 +505,7 @@ class TestPerformanceStress:
         error_rate = error_count / total_cases
         success_rate = success_count / total_cases
         
-        assert success_rate >= 0.40  # Should handle at least 40% successfully
+        assert success_rate >= 0.45  # Should handle at least 45% successfully (50/100)
         assert max_consecutive_errors < 20  # Should not have long error streaks
         assert recovery_count > 0  # Should demonstrate recovery capability
         

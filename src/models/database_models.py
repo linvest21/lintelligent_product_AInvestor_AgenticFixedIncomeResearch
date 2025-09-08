@@ -6,7 +6,7 @@ SQLAlchemy models implementing the database schema from the Confluence specifica
 """
 
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Boolean, Text, Index
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 from datetime import datetime, date
 from typing import Optional
